@@ -1,0 +1,47 @@
+.workoutPage {
+    h4 {
+        margin: 1rem 0;
+    }
+}
+
+.btn-blue {
+    padding: 1em;
+    
+    border: 0;
+    // border-radius: 8px;
+
+    background-color: #2f71ff;
+    color: white;
+    font-weight: bold;
+}
+
+.workoutGif {
+    border: 2px solid;
+    width: 50%;
+    height: auto;
+}
+
+.progressSection {
+    display: flex;
+    justify-content: center;
+    margin: 2em 0;
+
+    p {
+        text-align: center;
+        margin: 0;
+    }
+}
+
+progress {
+    padding: 3px;
+}
+
+// .progressBar {
+//     background-color: #2f71ff;
+//     width: 70%;
+//     padding: 4px 0;
+//     margin: 0 1em;
+
+//     border: none;
+//     border-radius: 8px;
+// }

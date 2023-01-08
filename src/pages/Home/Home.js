@@ -18,17 +18,20 @@ const OptionsContainer = () => {
         {
             title: "Beginner",
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi consectetur quae maiores adipisci. Quibusdam odio porro quis quia quae? Atque quis dolor vitae pariatur deleniti excepturi maxime consequuntur accusantium cum.",
-            imageName: "workout-beginner.jpg"
+            imageName: "workout-beginner.jpg",
+            difficulty: "beginner"
         },
         {
             title: "Intermediate",
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi consectetur quae maiores adipisci. Quibusdam odio porro quis quia quae? Atque quis dolor vitae pariatur deleniti excepturi maxime consequuntur accusantium cum.",
-            imageName: "workout-intermediate.jpg"
+            imageName: "workout-intermediate.jpg",
+            difficulty: "intermediate"
         },
         {
             title: "Advanced",
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi consectetur quae maiores adipisci. Quibusdam odio porro quis quia quae? Atque quis dolor vitae pariatur deleniti excepturi maxime consequuntur accusantium cum.",
-            imageName: "workout-advanced.jpg"
+            imageName: "workout-advanced.jpg",
+            difficulty: "hard"
         }
     ]
 
