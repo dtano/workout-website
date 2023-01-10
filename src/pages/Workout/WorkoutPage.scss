@@ -15,9 +15,13 @@
     font-weight: bold;
 }
 
+.gifPlayer {
+    font-size: 22px;
+}
+
 .workoutGif {
     border: 2px solid;
-    width: 50%;
+    width: 620px;
     height: auto;
 }
 
@@ -32,8 +36,9 @@
     }
 }
 
-progress {
-    padding: 3px;
+.progress {
+    height: 20px;
+    border: 0.5px solid;
 }
 
 // .progressBar {
