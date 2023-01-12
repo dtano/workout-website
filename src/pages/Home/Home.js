@@ -1,16 +1,39 @@
-import {React} from "react";
+import {React, useEffect, useState} from "react";
+import { Spinner } from "react-bootstrap";
 import NavBar from "../../components/NavBar/NavBar";
 import OptionCard from "../../components/OptionCard/OptionCard";
 
 import "./Home.css";
 
 const Home = () => {
+    const [isLoading, setIsLoading] = useState(true);
+
+    function fakeRequest() {
+        return new Promise(resolve => setTimeout(() => resolve(), 1500));
+    }
+
+    useEffect(() => {
+       if(isLoading){
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1500)
+       }
+    }, [isLoading]);
+
+    if(isLoading) {
+        return (
+            <div className="mainContainer">
+                <Spinner />
+            </div>
+        )
+    }
+
     return (
         <div className="mainContainer">
             <OptionsContainer />
             <NavBar />
         </div>
-    )
+    );
 };
 
 const OptionsContainer = () => {

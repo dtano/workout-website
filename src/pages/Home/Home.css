@@ -7,3 +7,11 @@
     justify-content: space-evenly;
     margin: 5rem 0;
 }
+
+#loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: inherit;
+    background-color: white;
+}
