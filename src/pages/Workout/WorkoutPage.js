@@ -7,19 +7,19 @@ import "./WorkoutPage.scss";
 const exercises = [
     {
         name: "Punches",
-        gifName: "Punches.gif",
+        gifName: "Punches",
         duration: 5
     },
     {
         name: "Jumping Jacks",
-        gifName: "JumpingJacks.gif",
+        gifName: "JumpingJacks",
         duration: 10
     }
 ]
 let paused = false;
 const WorkoutPage = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const [isPaused, setIsPaused] = useState(false);
+    const [isPaused, setIsPaused] = useState(true);
     const [workouts, setWorkouts] = useState([]);
     const [currWorkoutIndex, setCurrWorkoutIndex] = useState(0);
 
@@ -28,16 +28,20 @@ const WorkoutPage = () => {
     const [duration, setDuration] = useState(0);
     const [isSessionOngoing, setIsSessionOngoing] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
+
+    // Exercise media related state
+    const [exerciseMediaMap, setExerciseMediaMap] = useState({});
     
     let navigate = useNavigate();
     let interval = useRef(null);
-
-    const gifToPlay = require("../../public/workout-gifs/Punches.gif");
 
     useEffect(() => {
         // Load list of workouts based on difficulty
         const exerciseData = exercises;
         setWorkouts(exerciseData);
+
+        // Set gif and still (Maybe it'll be better if I load all gifs and stills at once)
+        loadExerciseMedia(exerciseData);
 
         // Potential structure of workout object
         // {name: "Punches", duration: 30, gifName: Punches.gif}
@@ -55,6 +59,25 @@ const WorkoutPage = () => {
             setCountdown(0);
         }
     }, [currWorkoutIndex])
+
+    const loadExerciseMedia = (exerciseData) => {
+        if(!exerciseData) return;
+
+        // Loop through the exerciseData
+        let map = {};
+        exerciseData.forEach(exercise => {
+            // Check if the exercise exists in the media map
+            if(!map.hasOwnProperty(exercise.name)){
+                map[exercise.name] = {
+                    gif: require(`../../public/workout-gifs/${exercise.gifName}.gif`),
+                    still: require(`../../public/workout-stills/${exercise.gifName}-still.png`)
+                }
+            }
+        });
+
+        console.log(map);
+        setExerciseMediaMap(map);
+    }
 
     const onReturnClick = (e) => {
         e.preventDefault();
@@ -76,24 +99,8 @@ const WorkoutPage = () => {
         console.log("SESSION FINISHED! Show end session screen");
         setIsSessionOngoing(false);
         setIsCompleted(false);
+        setIsPaused(true);
     }
-
-    // const tick = () => {
-    //     setCountdown((prev) => {
-    //         if(prev === duration){
-    //             clearInterval(interval.current);
-
-    //             if(currWorkoutIndex >= workouts.length - 1){
-    //                 onFinishSession();
-    //             }
-
-    //             setCurrWorkoutIndex(prev => prev + 1);
-    //             return prev;
-    //         }
-
-    //         return prev + 1;
-    //     });
-    // }
 
     const startTimer = (duration) => {
         console.log("Start timer with duration", duration);
@@ -105,25 +112,18 @@ const WorkoutPage = () => {
             setCountdown((prevSecond) => {
                 if(prevSecond === duration){
                     clearInterval(interval.current);
-                    // Then we need to increase the currWorkoutIndex
                     if(currWorkoutIndex >= workouts.length - 1){
-                        // Call the endgame function
                         onFinishSession();
                     }
+
                     setCurrWorkoutIndex(prev => prev + 1);
                     return prevSecond;
                 }
 
-                // if(paused){
-                //     console.log("Timer paused")
-                //     return prevSecond;
-                // }
-            
                 return prevSecond + 1;
             })
         }, 1000);
 
-        // interval.current = setInterval(tick, 1000);
         setIsPaused(false);
     }
 
@@ -143,6 +143,18 @@ const WorkoutPage = () => {
         return currExercise.name;
     }
 
+    const getExerciseGif = () => {
+        const currentExercise = workouts[currWorkoutIndex];
+        if(!currentExercise || Object.keys(exerciseMediaMap).length === 0) return "";
+
+        console.log("In exercise gif", exerciseMediaMap);
+        if(isPaused){
+            return exerciseMediaMap[currentExercise.name].still;
+        }
+
+        return exerciseMediaMap[currentExercise.name].gif;
+    }
+
     return (
         <div className="workoutPage">
             <div className="row">
@@ -154,7 +166,7 @@ const WorkoutPage = () => {
                 <h4>{getCurrentExerciseName()}</h4>
                 <div className="gifPlayer">
                     <div className="gifContainer">
-                        <img className="workoutGif" src={gifToPlay} alt="Some gif"/>
+                        <img className="workoutGif" src={getExerciseGif()} alt="Some gif"/>
                     </div>
                     <div className="row align-items-center justify-content-center mt-4">
                         <div className="col-1">
@@ -164,7 +176,7 @@ const WorkoutPage = () => {
                             {isPaused ? <ProgressBar now={countdown} max={duration}/> : <ProgressBar animated now={countdown} max={duration}/>}
                         </div>
                         <div className="col-1">
-                            <button className="playButton" onClick={onPlayButtonClick}>{isPaused ? "Play" : "Pause"}</button>
+                            <button className="playButton" onClick={onPlayButtonClick} disabled={isCompleted || !isSessionOngoing}>{isPaused ? "Play" : "Pause"}</button>
                         </div>
                     </div>
                 </div>
