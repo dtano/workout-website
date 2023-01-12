@@ -4,6 +4,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { convertToDuration } from "../../utils/timeUtils";
 import "./WorkoutPage.scss";
 
+/* TODO: 
+   Workout Page
+   - Pagination 
+   - Breaks in between exercises
+   - Pre-workout screen 
+   - Post-workout screen
+
+   Profile Page
+   - General layout
+   - Edit modals
+
+   Reports Page
+   - General layout
+   - Graph (Weight vs Time)
+
+   Login Page
+   - General layout
+   - Functionality
+   - Make this the default page
+
+   Register Page
+   - General layout
+   - Functionality
+*/
+
 const exercises = [
     {
         name: "Punches",
@@ -16,7 +41,7 @@ const exercises = [
         duration: 10
     }
 ]
-let paused = false;
+
 const WorkoutPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isPaused, setIsPaused] = useState(true);
@@ -96,7 +121,6 @@ const WorkoutPage = () => {
     }
 
     const onFinishSession = () => {
-        console.log("SESSION FINISHED! Show end session screen");
         setIsSessionOngoing(false);
         setIsCompleted(false);
         setIsPaused(true);
@@ -130,7 +154,6 @@ const WorkoutPage = () => {
     const stopTimer = () => {
         clearInterval(interval.current);
         setIsPaused(true);
-        paused = !paused;
     }
 
     const getCurrentExerciseName = () => {
@@ -162,6 +185,7 @@ const WorkoutPage = () => {
                     {!isSessionOngoing ? <button className="btn btn-primary" onClick={onReturnClick}>Return</button> : <></>}
                 </div>
             </div>
+            {/*workoutDemo can potentially be its own component*/}
             <div className="workoutDemo">
                 <h4>{getCurrentExerciseName()}</h4>
                 <div className="gifPlayer">
