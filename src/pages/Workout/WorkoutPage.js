@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ProgressBar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { convertToDuration } from "../../utils/timeUtils";
 import "./WorkoutPage.scss";
@@ -10,9 +11,9 @@ const exercises = [
         duration: 5
     },
     {
-        name: "Jumping jacks",
+        name: "Jumping Jacks",
         gifName: "JumpingJacks.gif",
-        duration: 30
+        duration: 10
     }
 ]
 
@@ -26,6 +27,7 @@ const WorkoutPage = () => {
     const [countdown, setCountdown] = useState(0);
     const [duration, setDuration] = useState(0);
     const [isSessionOngoing, setIsSessionOngoing] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(false);
     
     let navigate = useNavigate();
 
@@ -38,16 +40,16 @@ const WorkoutPage = () => {
 
         // Potential structure of workout object
         // {name: "Punches", duration: 30, gifName: Punches.gif}
-        setDuration(exerciseData[currWorkoutIndex].duration);
+        setDuration(exerciseData[0].duration);
         // startTimer();
     }, []);
 
     useEffect(() => {
-        if(workouts[currWorkoutIndex]){
-            console.log("Duration use effect");
+        if(currWorkoutIndex < workouts.length){
+            console.log("Duration use effect", workouts[currWorkoutIndex].duration);
             setDuration(workouts[currWorkoutIndex].duration);
             setCountdown(0);
-            startTimer();
+            startTimer(workouts[currWorkoutIndex].duration);
         }else{
             setCountdown(0);
         }
@@ -68,12 +70,26 @@ const WorkoutPage = () => {
         setIsPaused(prev => !prev);
     }
 
-    const startTimer = () => {
+    const onFinishSession = () => {
+        console.log("SESSION FINISHED! Show end session screen");
+        setIsSessionOngoing(false);
+        setIsCompleted(false);
+    }
+
+    const startTimer = (duration) => {
+        console.log("Start timer with duration", duration);
+        if(!isSessionOngoing){
+            setIsSessionOngoing(true);
+        }
         let interval = setInterval(() => {
             setCountdown((prevSecond) => {
                 if(prevSecond === duration){
                     clearInterval(interval);
                     // Then we need to increase the currWorkoutIndex
+                    if(currWorkoutIndex >= workouts.length - 1){
+                        // Call the endgame function
+                        onFinishSession();
+                    }
                     setCurrWorkoutIndex(prev => prev + 1);
                     return prevSecond;
                 }
@@ -98,31 +114,35 @@ const WorkoutPage = () => {
         setCurrWorkoutIndex(prev => prev + 1);
     }
 
+    const getCurrentExerciseName = () => {
+        const currExercise = exercises[currWorkoutIndex];
+
+        if(!currExercise || !currExercise.name){
+            return "";
+        }
+
+        return currExercise.name;
+    }
+
     return (
         <div className="workoutPage">
             <div className="row">
                 <div className="col-1 my-2">
-                    <button className="btn btn-primary" onClick={onReturnClick}>Return</button>
+                    {!isSessionOngoing ? <button className="btn btn-primary" onClick={onReturnClick}>Return</button> : <></>}
                 </div>
             </div>
             <div className="workoutDemo">
-                <h4>Workout name</h4>
+                <h4>{getCurrentExerciseName()}</h4>
                 <div className="gifPlayer">
                     <div className="gifContainer">
                         <img className="workoutGif" src={!isPaused ? gifToPlay : ""} alt="Some gif"/>
                     </div>
                     <div className="row align-items-center justify-content-center mt-4">
-                        <div className="timer">
-
-                        </div>
                         <div className="col-1">
                             {convertToDuration(countdown)}
                         </div>
                         <div className="col-6">
-                            <div className="progress my-auto">
-                                <div className={`progress-bar w-${countdown}`} role="progressbar" aria-valuenow={countdown} aria-valuemin="0" aria-valuemax={duration}></div>
-                                {/* <div className={`progress-bar w-20`} role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="50"></div> */}
-                            </div>
+                            <ProgressBar animated now={countdown} max={duration}/>
                         </div>
                         <div className="col-1">
                             <button className="playButton" onClick={onPlayButtonClick}>{isPaused ? "Play" : "Pause"}</button>
@@ -134,7 +154,7 @@ const WorkoutPage = () => {
           
             </div>
             <button onClick={addWorkoutIndex}>Add index</button>
-            <button onClick={startTimer}>Start timer</button>
+            <button onClick={() => {startTimer(duration)}}>Start timer</button>
         </div>
     )
 }
