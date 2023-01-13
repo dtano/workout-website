@@ -7,9 +7,9 @@ import "./WorkoutPage.scss";
 /* TODO: 
    Workout Page
    - Pagination 
-   - Breaks in between exercises
-   - Pre-workout screen 
-   - Post-workout screen
+   - Breaks in between exercises (DO THIS)
+   - Pre-workout screen (DO THIS)
+   - Post-workout screen (DO THIS)
 
    Profile Page
    - General layout
@@ -20,12 +20,12 @@ import "./WorkoutPage.scss";
    - Graph (Weight vs Time)
 
    Login Page
-   - General layout
+   - General layout (DO THIS)
    - Functionality
    - Make this the default page
 
    Register Page
-   - General layout
+   - General layout (DO THIS)
    - Functionality
 */
 
@@ -76,10 +76,10 @@ const WorkoutPage = () => {
 
     useEffect(() => {
         if(currWorkoutIndex < workouts.length){
-            console.log("Duration use effect", workouts[currWorkoutIndex].duration);
-            setDuration(workouts[currWorkoutIndex].duration);
+            const currentExercise = workouts[currWorkoutIndex];
+            setDuration(currentExercise.duration);
             setCountdown(0);
-            startTimer(workouts[currWorkoutIndex].duration);
+            startTimer(currentExercise.duration);
         }else{
             setCountdown(0);
         }
@@ -100,7 +100,6 @@ const WorkoutPage = () => {
             }
         });
 
-        console.log(map);
         setExerciseMediaMap(map);
     }
 
@@ -122,7 +121,7 @@ const WorkoutPage = () => {
 
     const onFinishSession = () => {
         setIsSessionOngoing(false);
-        setIsCompleted(false);
+        setIsCompleted(true);
         setIsPaused(true);
     }
 
@@ -178,14 +177,42 @@ const WorkoutPage = () => {
         return exerciseMediaMap[currentExercise.name].gif;
     }
 
-    return (
-        <div className="workoutPage">
-            <div className="row">
-                <div className="col-1 my-2">
-                    {!isSessionOngoing ? <button className="btn btn-primary" onClick={onReturnClick}>Return</button> : <></>}
+    const startProgram = (e) => {
+        e.preventDefault();
+        startTimer(duration);
+    }
+
+    const PreWorkout = () => {
+        return (
+            <div className="flexCenter">
+                <div className="preWorkoutScreen">
+                    <img src={require("../../public/images/workout-beginner.jpg")} alt="Some guy exercising"/>
+                    <div className="textContainer">
+                        <h2>Beginner</h2>
+                        <p className="description">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi consectetur quae maiores adipisci. Quibusdam odio porro quis quia quae? Atque quis dolor vitae pariatur deleniti excepturi maxime consequuntur accusantium cum.
+                        </p>
+                        <button onClick={startProgram}>START</button>
+                    </div>
                 </div>
             </div>
-            {/*workoutDemo can potentially be its own component*/}
+        )
+    }
+
+    const renderWorkoutProgram = () => {
+        if(!isSessionOngoing && !isCompleted){
+            return (
+                <PreWorkout />
+            );
+        }
+
+        if(isCompleted && !isSessionOngoing){
+            return (
+                <h1>Workout Done!</h1>
+            )
+        }
+
+        return (
             <div className="workoutDemo">
                 <h4>{getCurrentExerciseName()}</h4>
                 <div className="gifPlayer">
@@ -205,10 +232,21 @@ const WorkoutPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="pagination">
-          
+        )
+    }
+
+    return (
+        <div className="workoutPage">
+            <div className="row top-left m-2">
+                <div className="col-1 my-2">
+                    {!isSessionOngoing ? <button className="btn btn-primary" onClick={onReturnClick}>Return</button> : <></>}
+                </div>
             </div>
-            <button onClick={() => {startTimer(duration)}}>Start timer</button>
+            {/*workoutDemo can potentially be its own component*/}
+            {renderWorkoutProgram()}
+            <div className="pagination">
+                
+            </div>
         </div>
     )
 }
