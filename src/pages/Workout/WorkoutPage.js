@@ -7,9 +7,6 @@ import "./WorkoutPage.scss";
 /* TODO: 
    Workout Page
    - Pagination 
-   - Breaks in between exercises (DO THIS)
-   - Pre-workout screen (DO THIS)
-   - Post-workout screen (DO THIS)
 
    Profile Page
    - General layout
@@ -33,12 +30,20 @@ const exercises = [
     {
         name: "Punches",
         gifName: "Punches",
+        type: "EXERCISE",
         duration: 5
     },
     {
         name: "Jumping Jacks",
         gifName: "JumpingJacks",
+        type: "EXERCISE",
         duration: 10
+    },
+    {
+        name: "Rest",
+        gifName: "WaterBottle",
+        type: "REST",
+        duration: 15
     }
 ]
 
@@ -199,6 +204,19 @@ const WorkoutPage = () => {
         )
     }
 
+    const PostWorkout = () => {
+        return (
+            <div className="flexCenter">
+                <div className="postWorkoutScreen">
+                    <h2>Workout Done!</h2>
+                    <p>Calories Burnt: 2000kcal</p>
+                    <p>Time Spent: 20 minutes</p>
+                    <button className="btn-red" onClick={onReturnClick}>EXIT</button>
+                </div>
+            </div>
+        )
+    }
+
     const renderWorkoutProgram = () => {
         if(!isSessionOngoing && !isCompleted){
             return (
@@ -208,7 +226,7 @@ const WorkoutPage = () => {
 
         if(isCompleted && !isSessionOngoing){
             return (
-                <h1>Workout Done!</h1>
+                <PostWorkout />
             )
         }
 
