@@ -6,7 +6,7 @@ const NavBar = () => {
         <nav className="navBar">
             <a className="hoverFade" href="/">HOME</a>
             <a className="hoverFade" href="/reports">REPORTS</a>
-            <a className="hoverFade" href="/me">ME</a>
+            <a className="hoverFade" href="/profile">ME</a>
         </nav>
     )
 }
