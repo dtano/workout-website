@@ -9,21 +9,21 @@ import "./WorkoutPage.scss";
    Workout Page
 
    Profile Page
-   - General layout
-   - Edit modals
+   - Edit modals (DO THIS)
 
    Reports Page
-   - General layout
+   - General layout (DO THIS)
    - Graph (Weight vs Time)
 
    Login Page
-   - Functionality
+   - Functionality 
    - Make this the default page
 
    Register Page
    - Functionality
 
    Backend
+   - Initial setup (Repo and just making it run) (DO THIS)
    - Database migrations
    - Authentication API
    - Workout routine API

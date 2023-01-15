@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
+import EditIcon from "../../components/EditIcon/EditIcon";
 import NavBar from "../../components/NavBar/NavBar";
 import "./ProfilePage.scss";
 
@@ -23,24 +24,73 @@ const ProfilePage = () => {
      }
 
     return (
+        // <div className="mainContainer">
+        //     <div className="container profilePage">
+        //         <div className="profileCard">
+        //             <div className="imgContainer">
+        //                 <img src={""} alt="profile-pic"/>
+        //             </div>
+        //             <div className="userInfo">
+        //                 <p>Bernardo Silva</p>
+        //                 <p>sample@email.com</p>
+        //                 <p>22</p>
+        //             </div>
+        //         </div>
+        //         <div className="d-flex justify-content-between">
+        //             <div className="infoContainer">
+        //                 <div className="infoCard">
+        //                     <h4>Weight</h4>
+        //                     <p>75kg</p>
+        //                 </div>
+        //                 <div className="infoCard">
+        //                     <h4>Height</h4>
+        //                     <p>175cm</p>
+        //                 </div>
+        //             </div>
+        //             <div>
+        //                 <div className="infoCard">
+        //                     <h4>Weight</h4>
+        //                     <p>75kg</p>
+        //                 </div>
+        //                 <div className="infoCard">
+        //                     <h4>Height</h4>
+        //                     <p>175cm</p>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     </div>
+        //     <NavBar />
+        // </div>
         <div className="mainContainer">
-            <div className="container profilePage">
-                <div className="col-3 profileCard">
+            <div className="d-flex justify-content-evenly">
+                <div className="profileCard">
                     <div className="imgContainer">
-                        <img src={""} alt="profile-pic"/>
+                        <img src={require("../../public/images/user-profile.jpg")} alt="profile-pic"/>
                     </div>
                     <div className="userInfo">
-                        <p>Name: Sample</p>
-                        <p>Birthdate: 17/10/2000 (22 years old)</p>
-                        <p>Height: 175cm</p>
+                        <p className="fullName">Bernardo Silva</p>
+                        <p>sample@email.com</p>
+                        <p>22</p>
+                    </div>
+                    <div className="d-flex justify-content-end my-1">
+                        <EditIcon isSmall={false}/>
                     </div>
                 </div>
-                <div className="col-2 d-flex justify-content-between">
-                    <div className="col-1">
-                        <h3>Edit personal information</h3>
-                    </div>
-                    <div className="col-1">
-                        <h3>Edit account information</h3>
+                <div className="infoContainer">
+                    <div className="editContainer mb-4">
+                        <div className="infoCard">
+                            <h4>Weight <EditIcon isSmall={true}/></h4>
+                            <p>70kg</p>
+                        </div>
+                        <div className="infoCard">
+                            <h4>Height <EditIcon isSmall={true}/></h4>
+                            <p>175cm</p>
+                        </div>
+                    </div>  
+                    <div className="accountSettings">
+                        <button className="hoverFade">Change Password</button>
+                        <button className="hoverFade">Change Email</button>
+                        <button className="hoverFade">Logout</button>
                     </div>
                 </div>
             </div>
