@@ -8,10 +8,6 @@ import "./Home.css";
 const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
 
-    function fakeRequest() {
-        return new Promise(resolve => setTimeout(() => resolve(), 1500));
-    }
-
     useEffect(() => {
        if(isLoading){
         setTimeout(() => {

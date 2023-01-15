@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ProgressBar } from "react-bootstrap";
+import { ProgressBar, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import Pagination from "../../components/Pagination/Pagination";
 import { convertToDuration } from "../../utils/timeUtils";
 import "./WorkoutPage.scss";
 
 /* TODO: 
    Workout Page
-   - Pagination 
 
    Profile Page
    - General layout
@@ -17,16 +17,74 @@ import "./WorkoutPage.scss";
    - Graph (Weight vs Time)
 
    Login Page
-   - General layout (DO THIS)
    - Functionality
    - Make this the default page
 
    Register Page
-   - General layout (DO THIS)
    - Functionality
+
+   Backend
+   - Database migrations
+   - Authentication API
+   - Workout routine API
+   - User information API
 */
 
 const exercises = [
+    {
+        name: "Punches",
+        gifName: "Punches",
+        type: "EXERCISE",
+        duration: 5
+    },
+    {
+        name: "Jumping Jacks",
+        gifName: "JumpingJacks",
+        type: "EXERCISE",
+        duration: 10
+    },
+    {
+        name: "Rest",
+        gifName: "WaterBottle",
+        type: "REST",
+        duration: 15
+    },
+    {
+        name: "Punches",
+        gifName: "Punches",
+        type: "EXERCISE",
+        duration: 5
+    },
+    {
+        name: "Jumping Jacks",
+        gifName: "JumpingJacks",
+        type: "EXERCISE",
+        duration: 10
+    },
+    {
+        name: "Rest",
+        gifName: "WaterBottle",
+        type: "REST",
+        duration: 15
+    },
+    {
+        name: "Punches",
+        gifName: "Punches",
+        type: "EXERCISE",
+        duration: 5
+    },
+    {
+        name: "Jumping Jacks",
+        gifName: "JumpingJacks",
+        type: "EXERCISE",
+        duration: 10
+    },
+    {
+        name: "Rest",
+        gifName: "WaterBottle",
+        type: "REST",
+        duration: 15
+    },
     {
         name: "Punches",
         gifName: "Punches",
@@ -48,7 +106,7 @@ const exercises = [
 ]
 
 const WorkoutPage = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isPaused, setIsPaused] = useState(true);
     const [workouts, setWorkouts] = useState([]);
     const [currWorkoutIndex, setCurrWorkoutIndex] = useState(0);
@@ -77,6 +135,12 @@ const WorkoutPage = () => {
         // {name: "Punches", duration: 30, gifName: Punches.gif}
         setDuration(exerciseData[0].duration);
         // startTimer();
+
+        if(isLoading){
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 1000)
+        }
     }, []);
 
     useEffect(() => {
@@ -249,6 +313,18 @@ const WorkoutPage = () => {
                         </div>
                     </div>
                 </div>
+                <Pagination totalExercises={workouts?.length ? workouts.length : 0} 
+                activeExerciseIdx={currWorkoutIndex}
+                pageRangeDisplayed={12}
+                />
+            </div>
+        )
+    }
+
+    if(isLoading){
+        return (
+            <div className="mainContainer">
+                <Spinner />
             </div>
         )
     }

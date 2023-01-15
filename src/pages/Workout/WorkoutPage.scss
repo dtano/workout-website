@@ -34,9 +34,9 @@
 }
 
 .workoutGif {
-    border: 2px solid;
-    width: 620px;
-    height: 350px;
+    border: 2px solid #777;
+    width: 750px;
+    height: 400px;
 }
 
 .progressSection {
@@ -139,4 +139,15 @@
     padding: 2em;
 
     font-size: 20px;
+}
+
+.workoutGif {
+    background-color: white;
+}
+
+.playButton {
+    width: 70%;
+    height: auto;
+
+    border: 2px solid #777;
 }
