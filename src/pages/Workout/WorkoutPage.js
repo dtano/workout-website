@@ -6,7 +6,8 @@ import { convertToDuration } from "../../utils/timeUtils";
 import "./WorkoutPage.scss";
 
 /* TODO: 
-   Workout Page
+   Protected Routes
+   - Make sure that users can only access the other pages when they are logged in (DO THIS)
 
    Profile Page
    - Edit modals (DO THIS)
@@ -16,16 +17,14 @@ import "./WorkoutPage.scss";
    - Graph (Weight vs Time)
 
    Login Page
-   - Functionality 
+   - Functionality  (DO THIS)
    - Make this the default page
 
    Register Page
-   - Functionality
+   - Functionality (DO THIS)
 
    Backend
-   - Initial setup (Repo and just making it run) (DO THIS)
    - Database migrations
-   - Authentication API
    - Workout routine API
    - User information API
 */
