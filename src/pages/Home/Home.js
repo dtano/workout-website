@@ -8,8 +8,6 @@ import "./Home.css";
 const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
 
-    console.log(localStorage.getItem("user"));
-
     useEffect(() => {
        if(isLoading){
         setTimeout(() => {

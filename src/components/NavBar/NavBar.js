@@ -1,12 +1,13 @@
 import {React} from "react";
+import { Link } from "react-router-dom";
 import "./NavBar.scss";
 
 const NavBar = () => {
     return (
         <nav className="navBar">
-            <a className="hoverFade" href="/">HOME</a>
+            <Link className="hoverFade" to={"/"}>HOME</Link>
             <a className="hoverFade" href="/reports">REPORTS</a>
-            <a className="hoverFade" href="/profile">ME</a>
+            <Link className="hoverFade" to={"/profile"}>ME</Link>
         </nav>
     )
 }

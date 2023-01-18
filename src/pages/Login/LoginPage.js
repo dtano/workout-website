@@ -30,11 +30,10 @@ const LoginPage = () => {
             if(!response){
                 throw new Error("Failed login")
             }
-
+            
             localStorage.setItem("user", JSON.stringify(response.data));
             setEmail("");
             setPassword("");
-
             navigate('/');
         }catch(err){
             console.log(err);

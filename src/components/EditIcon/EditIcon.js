@@ -1,8 +1,8 @@
 import React from "react";
 
-const EditIcon = ({isSmall}) => {
+const EditIcon = ({isSmall, handleOnClick}) => {
     return (
-        <img className={isSmall ? "pencilIconSmall" : "pencilIcon"} src={require("../../public/images/PencilIcon.png")} alt="edit icon"/>
+        <img className={isSmall ? "pencilIconSmall" : "pencilIcon"} src={require("../../public/images/PencilIcon.png")} alt="edit icon" onClick={handleOnClick}/>
     )
 }
 

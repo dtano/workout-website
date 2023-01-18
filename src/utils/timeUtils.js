@@ -13,6 +13,23 @@ const convertToDuration = (numSeconds) => {
     return minutes+':'+seconds;
 }
 
+const getAge = (birthDate) => {
+    let today = new Date();
+
+    // Reformat the date string
+    // Slice the first 10 characters
+    let dateString = birthDate.slice(0, 10);
+    let birthDateObj = new Date(dateString);
+
+    let age = today.getFullYear() - birthDateObj.getFullYear();
+    var monthDifference = today.getMonth() - birthDateObj.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDateObj.getDate())) {
+        age--;
+    }
+    return age;
+}
+
 module.exports = {
-    convertToDuration
+    convertToDuration,
+    getAge
 }

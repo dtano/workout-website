@@ -6,9 +6,6 @@ import { convertToDuration } from "../../utils/timeUtils";
 import "./WorkoutPage.scss";
 
 /* TODO: 
-   Protected Routes
-   - Make sure that users can only access the other pages when they are logged in (DO THIS)
-
    Profile Page
    - Edit modals (DO THIS)
 
@@ -16,17 +13,10 @@ import "./WorkoutPage.scss";
    - General layout (DO THIS)
    - Graph (Weight vs Time)
 
-   Login Page
-   - Functionality  (DO THIS)
-   - Make this the default page
-
-   Register Page
-   - Functionality (DO THIS)
-
    Backend
    - Database migrations
    - Workout routine API
-   - User information API
+   - Weight history API
 */
 
 const exercises = [
