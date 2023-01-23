@@ -2,11 +2,17 @@ import {React, useEffect, useState} from "react";
 import { Spinner } from "react-bootstrap";
 import NavBar from "../../components/NavBar/NavBar";
 import OptionCard from "../../components/OptionCard/OptionCard";
+import * as workoutApi from "../../api/workoutApi";
 
 import "./Home.css";
 
-const Home = () => {
+const Home = ({setSelectedWorkout}) => {
     const [isLoading, setIsLoading] = useState(true);
+    const [workoutOptions, setWorkoutOptions] = useState([]);
+
+    useEffect(() => {
+        fetchWorkoutOptions();
+    }, []);
 
     useEffect(() => {
        if(isLoading){
@@ -15,6 +21,11 @@ const Home = () => {
         }, 1500)
        }
     }, [isLoading]);
+
+    const fetchWorkoutOptions = async () => {
+        const workoutsResponse = await workoutApi.getAllWorkouts();
+        setWorkoutOptions(workoutsResponse?.data);
+    }
 
     if(isLoading) {
         return (
@@ -26,40 +37,19 @@ const Home = () => {
 
     return (
         <div className="mainContainer">
-            <OptionsContainer />
+            <OptionsContainer options={workoutOptions} setSelectedWorkout={setSelectedWorkout}/>
             <NavBar />
         </div>
     );
 };
 
-const OptionsContainer = () => {
-    const options = [
-        {
-            title: "Beginner",
-            description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi consectetur quae maiores adipisci. Quibusdam odio porro quis quia quae? Atque quis dolor vitae pariatur deleniti excepturi maxime consequuntur accusantium cum.",
-            imageName: "workout-beginner.jpg",
-            difficulty: "beginner"
-        },
-        {
-            title: "Intermediate",
-            description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi consectetur quae maiores adipisci. Quibusdam odio porro quis quia quae? Atque quis dolor vitae pariatur deleniti excepturi maxime consequuntur accusantium cum.",
-            imageName: "workout-intermediate.jpg",
-            difficulty: "intermediate"
-        },
-        {
-            title: "Advanced",
-            description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi consectetur quae maiores adipisci. Quibusdam odio porro quis quia quae? Atque quis dolor vitae pariatur deleniti excepturi maxime consequuntur accusantium cum.",
-            imageName: "workout-advanced.jpg",
-            difficulty: "hard"
-        }
-    ]
-
+const OptionsContainer = ({options, setSelectedWorkout}) => {
     return (
         <ul className="optionsContainer">
             {
                 options.map((optionDetails, idx) => (
                     <li key={idx}>
-                        <OptionCard optionDetails={optionDetails}/>
+                        <OptionCard optionDetails={optionDetails} setSelectedWorkout={setSelectedWorkout}/>
                     </li>
                 ))
             }

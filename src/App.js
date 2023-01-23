@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import WorkoutPage from './pages/Workout/WorkoutPage';
 
@@ -11,7 +11,9 @@ import { useEffect, useState } from 'react';
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
-  // const [user, setUser] = useState(null);
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
+  
+  
   let user = JSON.parse(localStorage.getItem("user"));
   console.log("App user", user);
 
@@ -19,21 +21,25 @@ function App() {
     console.log("Rerender");
   }, []);
 
+  useEffect(() => {
+    console.log("Selected workout", selectedWorkout);
+  }, [selectedWorkout]);
+
   return (
     <div className="App">
       <Routes>
         <Route path='/' element={
           <ProtectedRoute>
-            <Home />
+            <Home setSelectedWorkout={setSelectedWorkout}/>
           </ProtectedRoute>
         }/>
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<SignUpPage />} />
-        <Route path='/workout' element={
+        <Route path='/workout/:id' element = {
           <ProtectedRoute>
             <WorkoutPage />
           </ProtectedRoute>
-        }/>
+        } />
         <Route path='/profile' element={
           <ProtectedRoute>
             <ProfilePage />

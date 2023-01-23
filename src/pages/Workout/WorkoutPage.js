@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ProgressBar, Spinner } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
+import { getOptionImageName } from "../../utils/generalUtils";
 import { convertToDuration } from "../../utils/timeUtils";
+import * as workoutEventApi from "../../api/workoutEventApi";
+import * as workoutApi from "../../api/workoutApi";
 import "./WorkoutPage.scss";
 
 /* TODO: 
    Profile Page
-   - Edit modals (DO THIS)
 
    Reports Page
    - General layout (DO THIS)
@@ -16,7 +18,6 @@ import "./WorkoutPage.scss";
    Backend
    - Database migrations
    - Workout routine API
-   - Weight history API
 */
 
 const exercises = [
@@ -45,48 +46,6 @@ const exercises = [
         duration: 5
     },
     {
-        name: "Jumping Jacks",
-        gifName: "JumpingJacks",
-        type: "EXERCISE",
-        duration: 10
-    },
-    {
-        name: "Rest",
-        gifName: "WaterBottle",
-        type: "REST",
-        duration: 15
-    },
-    {
-        name: "Punches",
-        gifName: "Punches",
-        type: "EXERCISE",
-        duration: 5
-    },
-    {
-        name: "Jumping Jacks",
-        gifName: "JumpingJacks",
-        type: "EXERCISE",
-        duration: 10
-    },
-    {
-        name: "Rest",
-        gifName: "WaterBottle",
-        type: "REST",
-        duration: 15
-    },
-    {
-        name: "Punches",
-        gifName: "Punches",
-        type: "EXERCISE",
-        duration: 5
-    },
-    {
-        name: "Jumping Jacks",
-        gifName: "JumpingJacks",
-        type: "EXERCISE",
-        duration: 10
-    },
-    {
         name: "Rest",
         gifName: "WaterBottle",
         type: "REST",
@@ -95,6 +54,7 @@ const exercises = [
 ]
 
 const WorkoutPage = () => {
+    const [workout, setWorkout] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isPaused, setIsPaused] = useState(true);
     const [workouts, setWorkouts] = useState([]);
@@ -111,19 +71,12 @@ const WorkoutPage = () => {
     
     let navigate = useNavigate();
     let interval = useRef(null);
+    let user = JSON.parse(localStorage.getItem("user"));
+    let {id} = useParams();
 
     useEffect(() => {
-        // Load list of workouts based on difficulty
-        const exerciseData = exercises;
-        setWorkouts(exerciseData);
-
-        // Set gif and still (Maybe it'll be better if I load all gifs and stills at once)
-        loadExerciseMedia(exerciseData);
-
-        // Potential structure of workout object
-        // {name: "Punches", duration: 30, gifName: Punches.gif}
-        setDuration(exerciseData[0].duration);
-        // startTimer();
+        // Get all exercises from selectedWorkout
+        fetchWorkoutInformation();
 
         if(isLoading){
             setTimeout(() => {
@@ -142,6 +95,23 @@ const WorkoutPage = () => {
             setCountdown(0);
         }
     }, [currWorkoutIndex])
+
+    const fetchWorkoutInformation = async () => {
+        const workoutInfo = await workoutApi.getWorkoutById(id);
+        setWorkout(workoutInfo?.data);
+        
+        // Load list of workouts based on difficulty
+        const exerciseData = exercises;
+        setWorkouts(exerciseData);
+
+        // Set gif and still (Maybe it'll be better if I load all gifs and stills at once)
+        loadExerciseMedia(exerciseData);
+
+        // Potential structure of workout object
+        // {name: "Punches", duration: 30, gifName: Punches.gif}
+        setDuration(exerciseData[0].duration);
+        // startTimer();
+    }
 
     const loadExerciseMedia = (exerciseData) => {
         if(!exerciseData) return;
@@ -163,6 +133,7 @@ const WorkoutPage = () => {
 
     const onReturnClick = (e) => {
         e.preventDefault();
+        // setSelectedWorkout(null);
         navigate("/");
     }
 
@@ -177,10 +148,16 @@ const WorkoutPage = () => {
         }
     }
 
-    const onFinishSession = () => {
-        setIsSessionOngoing(false);
-        setIsCompleted(true);
-        setIsPaused(true);
+    const onFinishSession = async () => {
+        try{
+            const createEventResponse = await workoutEventApi.createUserWorkoutEvent(user?.id, {workoutId: workout?.id});
+            console.log(createEventResponse);
+            setIsSessionOngoing(false);
+            setIsCompleted(true);
+            setIsPaused(true);
+        }catch(err){
+            console.log(err.response.data);
+        }
     }
 
     const startTimer = (duration) => {
@@ -244,11 +221,11 @@ const WorkoutPage = () => {
         return (
             <div className="flexCenter">
                 <div className="preWorkoutScreen">
-                    <img src={require("../../public/images/workout-beginner.jpg")} alt="Some guy exercising"/>
+                    <img src={require(`../../public/images/${getOptionImageName(workout?.name)}`)} alt="Some guy exercising"/>
                     <div className="textContainer">
-                        <h2>Beginner</h2>
+                        <h2>{workout?.name}</h2>
                         <p className="description">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi consectetur quae maiores adipisci. Quibusdam odio porro quis quia quae? Atque quis dolor vitae pariatur deleniti excepturi maxime consequuntur accusantium cum.
+                            {workout?.description}
                         </p>
                         <button onClick={startProgram}>START</button>
                     </div>
@@ -325,11 +302,7 @@ const WorkoutPage = () => {
                     {!isSessionOngoing ? <button className="btn btn-primary" onClick={onReturnClick}>Return</button> : <></>}
                 </div>
             </div>
-            {/*workoutDemo can potentially be its own component*/}
             {renderWorkoutProgram()}
-            <div className="pagination">
-                
-            </div>
         </div>
     )
 }
