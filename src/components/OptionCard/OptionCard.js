@@ -3,17 +3,12 @@ import { redirect, useNavigate } from "react-router";
 import { getOptionImageName } from "../../utils/generalUtils";
 import "./OptionCard.scss";
 
-const OptionCard = ({optionDetails, setSelectedWorkout}) => {
+const OptionCard = ({optionDetails}) => {
     const {name, description} = optionDetails;
     let navigate = useNavigate();
 
     const onClick = (e) => {
         e.preventDefault();
-
-        // Navigate to new link
-        setSelectedWorkout(optionDetails);
-        // Set chosen difficulty here as well
-        // can use context or local storage
         navigate(`/workout/${optionDetails?.id}`);
     }
     

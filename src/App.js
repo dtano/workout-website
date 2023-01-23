@@ -11,26 +11,15 @@ import { useEffect, useState } from 'react';
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
-  const [selectedWorkout, setSelectedWorkout] = useState(null);
-  
-  
   let user = JSON.parse(localStorage.getItem("user"));
   console.log("App user", user);
-
-  useEffect(() => {
-    console.log("Rerender");
-  }, []);
-
-  useEffect(() => {
-    console.log("Selected workout", selectedWorkout);
-  }, [selectedWorkout]);
 
   return (
     <div className="App">
       <Routes>
         <Route path='/' element={
           <ProtectedRoute>
-            <Home setSelectedWorkout={setSelectedWorkout}/>
+            <Home/>
           </ProtectedRoute>
         }/>
         <Route path='/login' element={<LoginPage />} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ProgressBar, Spinner } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
 import { getOptionImageName } from "../../utils/generalUtils";
 import { convertToDuration } from "../../utils/timeUtils";
@@ -104,13 +104,9 @@ const WorkoutPage = () => {
         const exerciseData = exercises;
         setWorkouts(exerciseData);
 
-        // Set gif and still (Maybe it'll be better if I load all gifs and stills at once)
         loadExerciseMedia(exerciseData);
 
-        // Potential structure of workout object
-        // {name: "Punches", duration: 30, gifName: Punches.gif}
         setDuration(exerciseData[0].duration);
-        // startTimer();
     }
 
     const loadExerciseMedia = (exerciseData) => {
@@ -133,7 +129,6 @@ const WorkoutPage = () => {
 
     const onReturnClick = (e) => {
         e.preventDefault();
-        // setSelectedWorkout(null);
         navigate("/");
     }
 
@@ -141,7 +136,6 @@ const WorkoutPage = () => {
         e.preventDefault();
 
         if(!isPaused){
-            // Change image to still image
             stopTimer();
         }else{
             startTimer(duration);
@@ -151,7 +145,6 @@ const WorkoutPage = () => {
     const onFinishSession = async () => {
         try{
             const createEventResponse = await workoutEventApi.createUserWorkoutEvent(user?.id, {workoutId: workout?.id});
-            console.log(createEventResponse);
             setIsSessionOngoing(false);
             setIsCompleted(true);
             setIsPaused(true);
@@ -161,7 +154,6 @@ const WorkoutPage = () => {
     }
 
     const startTimer = (duration) => {
-        console.log("Start timer with duration", duration);
         if(!isSessionOngoing){
             setIsSessionOngoing(true);
         }
@@ -201,6 +193,7 @@ const WorkoutPage = () => {
     }
 
     const getExerciseGif = () => {
+        if(currWorkoutIndex >= workouts.length) return "";
         const currentExercise = workouts[currWorkoutIndex];
         if(!currentExercise || Object.keys(exerciseMediaMap).length === 0) return "";
 
@@ -239,8 +232,8 @@ const WorkoutPage = () => {
             <div className="flexCenter">
                 <div className="postWorkoutScreen">
                     <h2>Workout Done!</h2>
-                    <p>Calories Burnt: 2000kcal</p>
-                    <p>Time Spent: 20 minutes</p>
+                    <p>Calories Burnt: {workout?.calories_burnt}kcal</p>
+                    <p>Time Spent: {workout?.duration/60} minutes</p>
                     <button className="btn-red" onClick={onReturnClick}>EXIT</button>
                 </div>
             </div>
@@ -265,7 +258,7 @@ const WorkoutPage = () => {
                 <h4>{getCurrentExerciseName()}</h4>
                 <div className="gifPlayer">
                     <div className="gifContainer">
-                        <img className="workoutGif" src={getExerciseGif()} alt="Some gif"/>
+                        {currWorkoutIndex < workouts.length ? <img className="workoutGif" src={getExerciseGif()} alt="Some gif"/> : <></>}
                     </div>
                     <div className="row align-items-center justify-content-center mt-4">
                         <div className="col-1">

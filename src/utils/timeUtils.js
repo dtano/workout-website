@@ -29,7 +29,18 @@ const getAge = (birthDate) => {
     return age;
 }
 
+const convertToMinutes = (seconds) => {
+    return seconds/60;
+}
+
+const extractDate = (datetimeString) => {
+    const date = datetimeString.slice(0, 10);
+    return date;
+}
+
 module.exports = {
     convertToDuration,
-    getAge
+    getAge,
+    extractDate,
+    convertToMinutes
 }

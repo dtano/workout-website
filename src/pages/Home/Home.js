@@ -6,7 +6,7 @@ import * as workoutApi from "../../api/workoutApi";
 
 import "./Home.css";
 
-const Home = ({setSelectedWorkout}) => {
+const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [workoutOptions, setWorkoutOptions] = useState([]);
 
@@ -37,19 +37,19 @@ const Home = ({setSelectedWorkout}) => {
 
     return (
         <div className="mainContainer">
-            <OptionsContainer options={workoutOptions} setSelectedWorkout={setSelectedWorkout}/>
+            <OptionsContainer options={workoutOptions}/>
             <NavBar />
         </div>
     );
 };
 
-const OptionsContainer = ({options, setSelectedWorkout}) => {
+const OptionsContainer = ({options}) => {
     return (
         <ul className="optionsContainer">
             {
                 options.map((optionDetails, idx) => (
                     <li key={idx}>
-                        <OptionCard optionDetails={optionDetails} setSelectedWorkout={setSelectedWorkout}/>
+                        <OptionCard optionDetails={optionDetails}/>
                     </li>
                 ))
             }

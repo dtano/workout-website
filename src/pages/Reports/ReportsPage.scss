@@ -1,0 +1,61 @@
+.reportsSection {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    width: 100%;
+    padding-left: 0;
+
+    li {
+        margin: 0 2em;
+    }
+}
+
+.reportCard {
+    background-color: #a0a1aa;
+    padding: 1em 1em 0.5em 1em;
+    border-radius: 10px;
+}
+
+.statsCard {
+    background-color: white;
+    padding: 2em 3em;
+    margin-bottom: 2em;
+
+    h4 {
+      text-align: center;  
+    }
+
+    p {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin: 0;
+    }
+}
+
+.titleCard {
+    background-color: white;
+    padding: 1em 4em;
+    margin-bottom: 1em;
+
+    h4 {
+        text-align: center;
+        margin: 0;
+    }
+}
+
+.weightCard {
+    text-align: center;
+    background-color: white;
+    margin-bottom: 1em;
+    padding: 0 0.5em;
+
+    p {
+        margin: 0;
+        font-size: 22px;
+    }
+}
+
+.weightChart {
+    width: 500px;
+}
