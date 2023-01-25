@@ -29,7 +29,8 @@ const ProfilePage = () => {
     
     const [weight, setWeight] = useState(0);
     const [newWeight, setNewWeight] = useState(0);
-    // const [height, setHeight] = useState(0);
+    const [height, setHeight] = useState(0);
+    const [newHeight, setNewHeight] = useState(0);
 
     const navigate = useNavigate();
 
@@ -45,16 +46,12 @@ const ProfilePage = () => {
 
     const fetchData = async () => {
         const user = JSON.parse(localStorage.getItem("user"));
-        console.log(user);
         
         const userInformationResponse = await userApi.getUserInformation(user.id);
         const userCurrentWeightResponse = await weightHistoryApi.getCurrentWeight(user.id);
         
-        
-        console.log("User info response", userInformationResponse);
         const userData = userInformationResponse?.data;
         const userWeight = userCurrentWeightResponse?.data?.weight;
-        console.log("User weight", userWeight);
         
         setUser(userData);
         setFirstName(userData.first_name);
@@ -63,9 +60,8 @@ const ProfilePage = () => {
         setEmail(userData.email);
         setCurrPassword("");
         setNewPassword("");
+        setHeight(userData.height);
         setWeight(userWeight);
-        
-        // setWeight here and setHeight here
     }
 
     if(isLoading) {
@@ -108,6 +104,7 @@ const ProfilePage = () => {
         setCurrPassword("");
         setNewPassword("");
         setNewWeight(0);
+        setNewHeight(0);
     }
 
     const openEmailModal = (e) => {
@@ -133,16 +130,13 @@ const ProfilePage = () => {
     const updateUser = async (updateData) => {
         try{
             setIsLoadingUpdate(true);
-            console.log("CALLING UPDATE API");
             const updateResponse = await userApi.updateUserInformation(user?.id, updateData);
-            console.log(updateResponse);
 
             // If update is successful then just close the modal
             await fetchData();
             setIsLoadingUpdate(false);
             closeModals();
         }catch(err){
-            console.log("SET ERROR  " + err.response.data);
             setError(err.response.data);
             setIsLoadingUpdate(false);
             console.log(err);
@@ -197,7 +191,25 @@ const ProfilePage = () => {
             setIsLoadingUpdate(false);
             onCloseModal();
         }catch(err){
-            console.log(err.response.data);
+            setError(err.response.data);
+            setIsLoadingUpdate(false);
+        }
+    }
+
+    const onSubmitUpdateHeight = async (e) => {
+        e.preventDefault();
+
+        const updateData = {
+            height: newHeight
+        }
+
+        try{
+            setIsLoadingUpdate(true);
+            await userApi.updateUserInformation(user?.id, updateData);
+            await fetchData();
+            setIsLoadingUpdate(false);
+            onCloseModal();
+        }catch(err){
             setError(err.response.data);
             setIsLoadingUpdate(false);
         }
@@ -327,6 +339,37 @@ const ProfilePage = () => {
         )
     }
 
+    const renderUpdateHeightModal = () => {
+        return (
+            <Modal show={showUpdateHeightModal} onHide={onCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Height</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {error && <div className="text-danger">*{error}</div>}
+                    <form>
+                        <div className="form-group text-center mb-3">
+                            <label className="mb-2">Current Height</label>
+                            <h2>{height > 0 ? `${height}cm` : "Not Set"}</h2>
+                        </div>
+                        <div className="form-group text-left mb-2">
+                            <label>New Height (cm)</label>
+                            <input className="form-control mt-1" type="number" value={newHeight} onChange={(e) => setNewHeight(e.target.value)}></input>
+                        </div>
+                    </form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={onCloseModal}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={onSubmitUpdateHeight}>
+                        Save {isLoadingUpdate && <Spinner />}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        )
+    }
+
     return (
         <div className="mainContainer">
             <div className="d-flex justify-content-evenly">
@@ -350,8 +393,8 @@ const ProfilePage = () => {
                             <p>{weight > 0 ? `${weight}kg` : "-"}</p>
                         </div>
                         <div className="infoCard">
-                            <h4>Height <EditIcon isSmall={true} handleOnClick={openWeightModal}/></h4>
-                            <p>175cm</p>
+                            <h4>Height <EditIcon isSmall={true} handleOnClick={openHeightModal}/></h4>
+                            <p>{height > 0 ? `${height}cm` : "-"}</p>
                         </div>
                     </div>  
                     <div className="accountSettings">
@@ -366,6 +409,7 @@ const ProfilePage = () => {
             {renderUpdateEmailModal()}
             {renderChangePasswordModal()}
             {renderUpdateWeightModal()}
+            {renderUpdateHeightModal()}
         </div>
     )
 }
