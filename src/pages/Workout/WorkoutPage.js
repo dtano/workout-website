@@ -8,57 +8,12 @@ import * as workoutEventApi from "../../api/workoutEventApi";
 import * as workoutApi from "../../api/workoutApi";
 import "./WorkoutPage.scss";
 
-/* TODO: 
-   Profile Page
-
-   Reports Page
-   - General layout (DO THIS)
-   - Graph (Weight vs Time)
-
-   Backend
-   - Database migrations
-   - Workout routine API
-*/
-
-const exercises = [
-    {
-        name: "Punches",
-        gifName: "Punches",
-        type: "EXERCISE",
-        duration: 5
-    },
-    {
-        name: "Jumping Jacks",
-        gifName: "JumpingJacks",
-        type: "EXERCISE",
-        duration: 10
-    },
-    {
-        name: "Rest",
-        gifName: "WaterBottle",
-        type: "REST",
-        duration: 15
-    },
-    {
-        name: "Punches",
-        gifName: "Punches",
-        type: "EXERCISE",
-        duration: 5
-    },
-    {
-        name: "Rest",
-        gifName: "WaterBottle",
-        type: "REST",
-        duration: 15
-    }
-]
-
 const WorkoutPage = () => {
     const [workout, setWorkout] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isPaused, setIsPaused] = useState(true);
-    const [workouts, setWorkouts] = useState([]);
-    const [currWorkoutIndex, setCurrWorkoutIndex] = useState(0);
+    const [workoutExercises, setWorkoutExercises] = useState([]);
+    const [currExerciseIndex, setCurrExerciseIndex] = useState(0);
 
     // Timer states
     const [countdown, setCountdown] = useState(0);
@@ -86,15 +41,15 @@ const WorkoutPage = () => {
     }, []);
 
     useEffect(() => {
-        if(currWorkoutIndex < workouts.length){
-            const currentExercise = workouts[currWorkoutIndex];
+        if(currExerciseIndex < workoutExercises.length){
+            const currentExercise = workoutExercises[currExerciseIndex];
             setDuration(currentExercise.duration);
             setCountdown(0);
             startTimer(currentExercise.duration);
         }else{
             setCountdown(0);
         }
-    }, [currWorkoutIndex])
+    }, [currExerciseIndex])
 
     const fetchWorkoutInformation = async () => {
         const workoutInfo = await workoutApi.getWorkoutById(id);
@@ -103,22 +58,18 @@ const WorkoutPage = () => {
         // Load list of workouts based on difficulty
         const exerciseData = workoutInfo?.data.exercises;
         console.log(exerciseData);
-        setWorkouts(exerciseData);
+        setWorkoutExercises(exerciseData);
 
         loadExerciseMedia(exerciseData);
-
-        console.log(exerciseData[0].duration);
         setDuration(exerciseData[0].duration);
     }
 
     const loadExerciseMedia = (exerciseData) => {
         if(!exerciseData) return;
 
-        // Loop through the exerciseData
         let map = {};
         exerciseData.forEach(workoutExercise => {
             // Check if the exercise exists in the media map
-            console.log("Exercise data", exerciseData);
             const exerciseInfo = workoutExercise?.exercise;
             if(!map.hasOwnProperty(exerciseInfo.name)){
                 map[exerciseInfo.name] = {
@@ -128,7 +79,6 @@ const WorkoutPage = () => {
             }
         });
 
-        console.log("Map", map);
         setExerciseMediaMap(map);
     }
 
@@ -149,7 +99,7 @@ const WorkoutPage = () => {
 
     const onFinishSession = async () => {
         try{
-            const createEventResponse = await workoutEventApi.createUserWorkoutEvent(user?.id, {workoutId: workout?.id});
+            await workoutEventApi.createUserWorkoutEvent(user?.id, {workoutId: workout?.id});
             setIsSessionOngoing(false);
             setIsCompleted(true);
             setIsPaused(true);
@@ -167,11 +117,11 @@ const WorkoutPage = () => {
             setCountdown((prevSecond) => {
                 if(prevSecond === duration){
                     clearInterval(interval.current);
-                    if(currWorkoutIndex >= workouts.length - 1){
+                    if(currExerciseIndex >= workoutExercises.length - 1){
                         onFinishSession();
                     }
 
-                    setCurrWorkoutIndex(prev => prev + 1);
+                    setCurrExerciseIndex(prev => prev + 1);
                     return prevSecond;
                 }
 
@@ -188,7 +138,7 @@ const WorkoutPage = () => {
     }
 
     const getCurrentExerciseName = () => {
-        const currExercise = workouts[currWorkoutIndex];
+        const currExercise = workoutExercises[currExerciseIndex];
 
         if(!currExercise || !currExercise?.exercise.name){
             return "";
@@ -198,11 +148,11 @@ const WorkoutPage = () => {
     }
 
     const getExerciseGif = () => {
-        if(currWorkoutIndex >= workouts.length) return "";
-        const currentExercise = workouts[currWorkoutIndex];
+        console.log("Get exercise gif");
+        if(currExerciseIndex >= workoutExercises.length) return "";
+        const currentExercise = workoutExercises[currExerciseIndex];
         if(!currentExercise || Object.keys(exerciseMediaMap).length === 0) return "";
 
-        console.log("In exercise gif", currentExercise);
         if(isPaused){
             return exerciseMediaMap[currentExercise?.exercise.name].still;
         }
@@ -260,12 +210,12 @@ const WorkoutPage = () => {
 
         return (
             <div className="workoutDemo">
-                <h4>{getCurrentExerciseName()}</h4>
+                <h3 className="mb-4">{getCurrentExerciseName()}</h3>
                 <div className="gifPlayer">
                     <div className="gifContainer">
-                        {currWorkoutIndex < workouts.length ? <img className="workoutGif" src={getExerciseGif()} alt="Some gif"/> : <></>}
+                        {currExerciseIndex < workoutExercises.length ? <img className="workoutGif" src={getExerciseGif()} alt="Some gif"/> : <></>}
                     </div>
-                    <div className="row align-items-center justify-content-center mt-4">
+                    <div className="center-flex mt-4">
                         <div className="col-1">
                             {convertToDuration(countdown)}
                         </div>
@@ -277,8 +227,8 @@ const WorkoutPage = () => {
                         </div>
                     </div>
                 </div>
-                <Pagination totalExercises={workouts?.length ? workouts.length : 0} 
-                activeExerciseIdx={currWorkoutIndex}
+                <Pagination totalExercises={workoutExercises?.length ? workoutExercises.length : 0} 
+                activeExerciseIdx={currExerciseIndex}
                 pageRangeDisplayed={12}
                 />
             </div>
@@ -297,7 +247,7 @@ const WorkoutPage = () => {
         <div className="workoutPage">
             <div className="row top-left m-2">
                 <div className="col-1 my-2">
-                    {!isSessionOngoing ? <button className="btn btn-primary" onClick={onReturnClick}>Return</button> : <></>}
+                    <button className="btn btn-primary" onClick={onReturnClick}>Return</button>
                 </div>
             </div>
             {renderWorkoutProgram()}

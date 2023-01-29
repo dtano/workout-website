@@ -59,11 +59,11 @@ const ReportsPage = () => {
                     <div className="reportCard">
                         <div className="statsCard">
                             <h4>WORKOUTS</h4>
-                            <p>{workoutReport?.totalWorkouts}</p>
+                            <p>{workoutReport?.totalWorkouts ?? 0}</p>
                         </div>
                         <div className="statsCard">
                             <h4>CALORIES BURNT</h4>
-                            <p>{workoutReport?.totalCaloriesBurnt} kcal</p>
+                            <p>{workoutReport?.totalCaloriesBurnt ?? 0} kcal</p>
                         </div>
                         <div className="statsCard">
                             <h4>TOTAL MINUTES</h4>
@@ -77,13 +77,13 @@ const ReportsPage = () => {
                             <h4>WEIGHT</h4>
                         </div>
                         <div className="weightCard">
-                            <p>Current: <b>{weightInfo?.currentWeight}kg</b></p>
+                            <p>Current: <b>{displayWeight(weightInfo?.currentWeight)}</b></p>
                         </div>
                         <div className="weightCard">
-                            <p>Heaviest: <b>{weightInfo?.maxWeight}kg</b></p>
+                            <p>Heaviest: <b>{displayWeight(weightInfo?.maxWeight)}</b></p>
                         </div>
                         <div className="weightCard">
-                            <p>Lightest: <b>{weightInfo?.minWeight}kg</b></p>
+                            <p>Lightest: <b>{displayWeight(weightInfo?.minWeight)}</b></p>
                         </div>
                         <WeightLineChart weightData={weightData}/>
                     </div>
@@ -92,6 +92,14 @@ const ReportsPage = () => {
             <NavBar />
         </div>
      )
+}
+
+const displayWeight = (weight) => {
+    if(!weight){
+        return "Not Set";
+    }
+
+    return `${weight}kg`;
 }
 
 const WeightLineChart = ({weightData}) => {

@@ -7,7 +7,6 @@ const Pagination = ({totalExercises, activeExerciseIdx, pageRangeDisplayed}) => 
     const [upperBound, setUpperBound] = useState(0);
     
     useEffect(() => {
-        console.log("Use effect")
         let pages = [];
         for(let i = 1; i <= totalExercises; i++){
             pages.push(i);
@@ -36,15 +35,15 @@ const Pagination = ({totalExercises, activeExerciseIdx, pageRangeDisplayed}) => 
         <div className="container pagination justify-content-md-center">
             {lowerBound > 0 ? <Arrow isRight={false}/> : <></>}
             {
-                pagesToDisplay.map((page) => {
+                pagesToDisplay.map((page, index) => {
                     let currIndex = page - 1;
                     if(currIndex === activeExerciseIdx){
-                        return <span className="circle activeExercise"></span>
+                        return <span key={index} className="circle activeExercise"></span>
                     }else if(currIndex < activeExerciseIdx){
-                        return <span className="circle completedExercise">{page}</span>
+                        return <span key={index}className="circle completedExercise"></span>
                     }
 
-                    return <span className={`circle`} key={currIndex}></span>
+                    return <span className={`circle`} key={index}></span>
                 })
             }
             {upperBound < totalExercises ?  <Arrow isRight={true}/> : <></>}

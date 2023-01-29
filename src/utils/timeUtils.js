@@ -30,6 +30,7 @@ const getAge = (birthDate) => {
 }
 
 const convertToMinutes = (seconds) => {
+    if(!seconds) return 0;
     return seconds/60;
 }
 
