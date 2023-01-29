@@ -98,14 +98,16 @@ const WorkoutPage = () => {
 
     const fetchWorkoutInformation = async () => {
         const workoutInfo = await workoutApi.getWorkoutById(id);
-        setWorkout(workoutInfo?.data);
+        setWorkout(workoutInfo?.data.workout);
         
         // Load list of workouts based on difficulty
-        const exerciseData = exercises;
+        const exerciseData = workoutInfo?.data.exercises;
+        console.log(exerciseData);
         setWorkouts(exerciseData);
 
         loadExerciseMedia(exerciseData);
 
+        console.log(exerciseData[0].duration);
         setDuration(exerciseData[0].duration);
     }
 
@@ -114,16 +116,19 @@ const WorkoutPage = () => {
 
         // Loop through the exerciseData
         let map = {};
-        exerciseData.forEach(exercise => {
+        exerciseData.forEach(workoutExercise => {
             // Check if the exercise exists in the media map
-            if(!map.hasOwnProperty(exercise.name)){
-                map[exercise.name] = {
-                    gif: require(`../../public/workout-gifs/${exercise.gifName}.gif`),
-                    still: require(`../../public/workout-stills/${exercise.gifName}-still.png`)
+            console.log("Exercise data", exerciseData);
+            const exerciseInfo = workoutExercise?.exercise;
+            if(!map.hasOwnProperty(exerciseInfo.name)){
+                map[exerciseInfo.name] = {
+                    gif: require(`../../public/workout-gifs/${exerciseInfo.image_name}.gif`),
+                    still: require(`../../public/workout-stills/${exerciseInfo.image_name}-still.png`)
                 }
             }
         });
 
+        console.log("Map", map);
         setExerciseMediaMap(map);
     }
 
@@ -183,13 +188,13 @@ const WorkoutPage = () => {
     }
 
     const getCurrentExerciseName = () => {
-        const currExercise = exercises[currWorkoutIndex];
+        const currExercise = workouts[currWorkoutIndex];
 
-        if(!currExercise || !currExercise.name){
+        if(!currExercise || !currExercise?.exercise.name){
             return "";
         }
 
-        return currExercise.name;
+        return currExercise?.exercise.name;
     }
 
     const getExerciseGif = () => {
@@ -197,12 +202,12 @@ const WorkoutPage = () => {
         const currentExercise = workouts[currWorkoutIndex];
         if(!currentExercise || Object.keys(exerciseMediaMap).length === 0) return "";
 
-        console.log("In exercise gif", exerciseMediaMap);
+        console.log("In exercise gif", currentExercise);
         if(isPaused){
-            return exerciseMediaMap[currentExercise.name].still;
+            return exerciseMediaMap[currentExercise?.exercise.name].still;
         }
 
-        return exerciseMediaMap[currentExercise.name].gif;
+        return exerciseMediaMap[currentExercise?.exercise.name].gif;
     }
 
     const startProgram = (e) => {
